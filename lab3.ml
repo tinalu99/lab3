@@ -234,7 +234,7 @@ should be. Then, consider the implications of representing the overall
 data type as a tuple or a record.
 ......................................................................*)
 
-type date = Year of int | Month of int | Day of int ;;
+type date = { day : int;  month : int;  year : int }
 
 (* After you've thought it through, look up the Date module in the
 OCaml documentation to see how this was implemented there. If you
@@ -246,8 +246,6 @@ Exercise 8: Change your data type, above, to implement it in a manner
 identical to the Date module, but only with fields for year, month, and
 day. If no changes are required...well, that was easy.
 ........................................................................*)
-
-type date = { day : int;  month : int;  year : int }
 
 (* ........................................................................
 
