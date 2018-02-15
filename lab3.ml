@@ -118,8 +118,13 @@ an Invalid_Color exception with a useful message.
 
 exception Invalid_Color of string ;;
 
-let valid_rgb = (x, y, z) in
-if 0 <= x <= 255 and 0 <= y <= 255
+let valid_rgb col =
+  match col with
+  | Simple x -> Simple x
+  | RGB (x, y, z) ->
+        if 0 <= x && x <= 255 && 0 <= y && y <= 255 && 0 <= z && z <= 255
+        then RGB (x, y, z)
+        else raise (Invalid_Color "RGB triple should be between 0 and 255")
 (*......................................................................
 Exercise 3: Write a function, make_color, that accepts three integers
 for the channel values and returns a value of the color type. Be sure
