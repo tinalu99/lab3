@@ -210,7 +210,7 @@ should be. Then, consider the implications of representing the overall
 data type as a tuple or a record.
 ......................................................................*)
 
-type date = Years of int | Months of int | Days of int ;;
+type date = Year of int | Month of int | Day of int ;;
 
 (* After you've thought it through, look up the Date module in the
 OCaml documentation to see how this was implemented there. If you
