@@ -118,21 +118,21 @@ an Invalid_Color exception with a useful message.
 
 exception Invalid_Color of string ;;
 
-let valid_rgb col =
+let valid_rgb (col: color) : color =
   match col with
   | Simple x -> Simple x
   | RGB (x, y, z) ->
         if 0 <= x && x <= 255 && 0 <= y && y <= 255 && 0 <= z && z <= 255
         then RGB (x, y, z)
-        else raise (Invalid_Color "RGB triple should be between 0 and 255")
+        else raise (Invalid_Color "RGB triple should be between 0 and 255") ;;
 (*......................................................................
 Exercise 3: Write a function, make_color, that accepts three integers
 for the channel values and returns a value of the color type. Be sure
 to verify the invariant.
 ......................................................................*)
 
-let make_color =
-  fun _ -> failwith "make_color not implemented" ;;
+let make_color (x : int) (y: int) (z: int) : color =
+  valid_rgb (RGB (x, y, z)) ;;
 
 (*......................................................................
 Exercise 4: Write a function, convert_to_rgb, that accepts a color and
@@ -147,10 +147,30 @@ below are some other values you might find helpful.
     255 | 255 |   0 | Yellow
      75 |   0 | 130 | Indigo
     240 | 130 | 240 | Violet
+
+    R  |  G  |  B  | Color
+    ----|-----|-----|------------
+    255 |   0 |   0 | Red
+      0 |  64 |   0 | Dark green
+      0 | 255 | 255 | Cyan
+    164 |  16 |  52 | Crimson
+
 ......................................................................*)
 
-let convert_to_rgb =
-  fun _ -> failwith "convert_to_rgb not implemented" ;;
+let convert_to_rgb (col: color) : int * int * int =
+  match col with
+  | RGB (x, y, z) -> (x, y, z)
+  | Simple x ->
+      match x with
+      | Red -> (255, 0, 0)
+      | Crimson -> (164, 16, 52)
+      | Orange -> (255, 165, 0)
+      | Yellow -> (255, 255, 0)
+      | Green -> (0, 255, 0)
+      | Blue -> (0, 0, 255)
+      | Indigo -> (75, 0, 130)
+      | Violet -> (240, 130, 240)
+   ;;
 
 (* If we want to blend two colors, we might be tempted to average each
 of the individual color channels. This might be fine, but a quirk in
@@ -174,8 +194,10 @@ and returns an integer whose result matches the calculation above. Be
 sure to round your result when converting back to an integer.
 ......................................................................*)
 
-let blend_channel =
-  fun _ -> failwith "blend_channel not implemented" ;;
+let blend_channel (x: int) (y: int) : int =
+  let x_f = float_of_int x in
+  let y_f = float_of_int y in
+  int_of_float (floor (sqrt ( (x_f ** 2. +. y_f ** 2.) /. 2.) +. 0.5)) ;;
 
 (*......................................................................
 Exercise 6: Now write a function, blend, that returns the result of
@@ -183,8 +205,10 @@ blending two colors. Do you need to do anything special to preserve
 the invariant in this function after blending?
 ......................................................................*)
 
-let blend =
-  fun _ -> failwith "blend not implemented" ;;
+let blend (col1: color) (col2: color) : color =
+  let (a1, b1, c1) = convert_to_rgb col1 in
+  let (a2, b2, c2) = convert_to_rgb col2 in
+  RGB (blend_channel a1 a2, blend_channel b1 b2, blend_channel c1 c2) ;;
 
 
 (*======================================================================
@@ -221,7 +245,11 @@ module have implemented this data type as it did?
 Exercise 8: Change your data type, above, to implement it in a manner
 identical to the Date module, but only with fields for year, month, and
 day. If no changes are required...well, that was easy.
-........................................................................
+........................................................................*)
+
+type date = { day : int;  month : int;  year : int }
+
+(* ........................................................................
 
 Like the color type, above, the date object has invariants. In fact,
 the invariants for this type are more complex: we must ensure that
